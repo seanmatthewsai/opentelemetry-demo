@@ -1,0 +1,74 @@
+prometheus:
+  enabled: false
+
+grafana:
+  enabled: false
+
+opensearch:
+  enabled: false
+
+jaeger:
+  enabled: false
+
+components:
+  frontend-proxy:
+    replicas: 2
+    service:
+      type: LoadBalancer
+  frontend:
+    replicas: 3
+  cart:
+    replicas: 3
+  checkout:
+    replicas: 2
+  currency:
+    replicas: 2
+  payment:
+    replicas: 2
+  product-catalog:
+    replicas: 3
+  recommendation:
+    replicas: 2
+  shipping:
+    replicas: 2
+  ad:
+    replicas: 2
+  load-generator:
+    envOverrides:
+      - name: LOCUST_BROWSER_TRAFFIC_ENABLED
+        value: "true"
+    resources:
+      requests:
+        memory: 800Mi
+      limits:
+        memory: 1500Mi
+
+opentelemetry-collector:
+  mode: deployment
+  config:
+    processors:
+      resource/env:
+        attributes:
+          - key: deployment.environment
+            value: otel-demo
+            action: upsert
+      cumulativetodelta: {}
+    exporters:
+      otlp/edot-gateway:
+        endpoint: opentelemetry-kube-stack-gateway-collector.opentelemetry-operator-system:4317
+        tls:
+          insecure: true
+    service:
+      pipelines:
+        traces:
+          receivers: [otlp]
+          processors: [resource/env, batch]
+          exporters: [otlp/edot-gateway]
+        metrics:
+          receivers: [otlp]
+          processors: [resource/env, cumulativetodelta, batch]
+          exporters: [otlp/edot-gateway]
+        logs:
+          receivers: [otlp]
+          processors: [resource/env, batch]
+          exporters: [otlp/edot-gateway]
