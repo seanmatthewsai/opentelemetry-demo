@@ -16,7 +16,8 @@ components:
     service:
       type: LoadBalancer
   frontend:
-    replicas: 3
+    # The chart renders `.replicas | default 1`, so 0 is ignored; install.sh and start.sh scale frontend to 0.
+    replicas: 0
   cart:
     replicas: 3
   checkout:
