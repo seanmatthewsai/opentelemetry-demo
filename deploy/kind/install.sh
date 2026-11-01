@@ -43,7 +43,7 @@ kubectl create namespace otel-demo --dry-run=client -o yaml | kubectl apply -f -
 helm upgrade --install otel-demo open-telemetry/opentelemetry-demo \
   --namespace otel-demo \
   --values "$HERE/otel-demo-values.yaml"
-kubectl -n otel-demo scale deploy/frontend --replicas=0
+kubectl -n otel-demo scale deploy/checkout --replicas=0
 
 kubectl -n otel-demo get pods -o wide
 echo
