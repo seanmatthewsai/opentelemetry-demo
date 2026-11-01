@@ -50,9 +50,15 @@ Bundled Prometheus, Grafana, Jaeger and OpenSearch are disabled; Elastic is the 
 
 | Service | Replicas |
 |---|---|
-| frontend, cart, product-catalog | 3 |
+| frontend | 0 (intentional, see below) |
+| cart, product-catalog | 3 |
 | frontend-proxy, checkout, currency, payment, recommendation, shipping, ad | 2 |
 | everything else (postgresql, kafka, valkey-cart, flagd, load-generator, ...) | 1 |
+
+`frontend` is scaled to 0 on purpose, so the shop UI behind `frontend-proxy` returns errors. The chart ignores
+`replicas: 0` (it falls back to 1), so `install.sh` and `start.sh` run `kubectl -n otel-demo scale deploy/frontend --replicas=0`
+after Helm. To revert, set `components.frontend.replicas` back to 3, remove those two `kubectl scale deploy/frontend` lines,
+and re-run `install.sh`.
 
 ## Deploy
 
