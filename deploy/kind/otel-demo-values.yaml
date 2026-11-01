@@ -20,7 +20,8 @@ components:
   cart:
     replicas: 3
   checkout:
-    replicas: 2
+    # The chart renders `.replicas | default 1`, so 0 is ignored; install.sh and start.sh scale checkout to 0.
+    replicas: 0
   currency:
     replicas: 2
   payment:
