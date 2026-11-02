@@ -9,7 +9,6 @@ if [ -f "$F" ]; then
 else
   helm upgrade --install otel-demo open-telemetry/opentelemetry-demo -n otel-demo --values "$(dirname "$0")/otel-demo-values.yaml"
 fi
-kubectl -n otel-demo scale deploy/checkout --replicas=0
 kubectl -n otel-demo rollout status deploy/frontend-proxy --timeout=600s
 pkill -f "port-forward svc/frontend-proxy" 2>/dev/null || true
 nohup kubectl -n otel-demo port-forward svc/frontend-proxy 8080:8080 >/tmp/otel-port-forward.log 2>&1 &

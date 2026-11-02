@@ -51,14 +51,8 @@ Bundled Prometheus, Grafana, Jaeger and OpenSearch are disabled; Elastic is the 
 | Service | Replicas |
 |---|---|
 | frontend, cart, product-catalog | 3 |
-| frontend-proxy, currency, payment, recommendation, shipping, ad | 2 |
-| checkout | 0 (intentional, see below) |
+| frontend-proxy, checkout, currency, payment, recommendation, shipping, ad | 2 |
 | everything else (postgresql, kafka, valkey-cart, flagd, load-generator, ...) | 1 |
-
-`checkout` is scaled to 0 on purpose, so placing an order fails while the rest of the shop keeps working. The chart
-ignores `replicas: 0` (it falls back to 1), so `install.sh` and `start.sh` run
-`kubectl -n otel-demo scale deploy/checkout --replicas=0` after Helm. To revert, set `components.checkout.replicas`
-back to 2, remove those two `kubectl scale deploy/checkout` lines, and re-run `install.sh`.
 
 ## Deploy
 
